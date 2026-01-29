@@ -4,13 +4,13 @@ A tool to download all PowerPoint files from your Canvas course modules for revi
 
 ## Features
 
-✅ Download PowerPoint files from Canvas courses (.ppt, .pptx, .pptm)
-✅ Web interface - no command line needed
-✅ Select specific modules or download all at once
-✅ Real-time progress updates
-✅ Files organized by module name
-✅ Download as a single ZIP file (web app)
-✅ Works with both direct files and files embedded in pages
+- Download PowerPoint files from Canvas courses (.ppt, .pptx, .pptm)
+- Web interface - no command line needed
+- Select specific modules or download all at once
+- Real-time progress updates
+- Files organized by module name
+- Download as a single ZIP file (web app)
+- Works with both direct files and files embedded in pages
 
 ## Installation
 
