@@ -33,7 +33,7 @@ The easiest way to use this tool is through the web interface:
 2. **Your browser will automatically open** to `http://localhost:8501`
 
 3. **Follow the steps in the web interface**:
-   - Enter your Canvas URL (e.g., `newcastle.instructure.com`)
+   - Enter your Canvas URL (e.g., ` ncl.instructure.com`)
    - Enter your API token
    - Click "Fetch My Courses"
    - Select your course from the dropdown
