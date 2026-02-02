@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Canvas PowerPoint Downloader
-Downloads all PowerPoint files from modules in a Canvas course
+Canvas File Downloader
+Downloads all PowerPoint and PDF files from modules in a Canvas course
 Handles both direct file links and files embedded in Pages
 """
 
@@ -25,7 +25,7 @@ class FileURLExtractor(HTMLParser):
             for attr, value in attrs:
                 if attr == 'href' and value:
                     # Check if it's a file URL
-                    if '/files/' in value or value.endswith(('.ppt', '.pptx', '.pptm')):
+                    if '/files/' in value or value.endswith(('.ppt', '.pptx', '.pptm', '.pdf')):
                         self.file_urls.append(value)
 
 
@@ -166,9 +166,9 @@ def download_file(headers, url, filepath):
             f.write(chunk)
 
 
-def is_powerpoint(filename):
-    """Check if file is a PowerPoint"""
-    return filename.lower().endswith(('.ppt', '.pptx', '.pptm'))
+def is_downloadable_file(filename):
+    """Check if file is a PowerPoint or PDF"""
+    return filename.lower().endswith(('.ppt', '.pptx', '.pptm', '.pdf'))
 
 
 def sanitize_filename(filename):
@@ -214,7 +214,7 @@ def main():
         return
 
     # Output directory
-    output_dir = Path("canvas_powerpoints")
+    output_dir = Path("canvas_files")
     output_dir.mkdir(exist_ok=True)
 
     print(f"\n🔍 Verifying access to course {course_id}...")
@@ -229,7 +229,7 @@ def main():
         modules = get_modules(canvas_url, headers, course_id)
         print(f"✅ Found {len(modules)} modules")
 
-        total_ppts = 0
+        total_files = 0
         downloaded_files = set()  # Track to avoid duplicates
 
         for module in modules:
@@ -253,7 +253,7 @@ def main():
                 if item_type == 'File':
                     filename = item_title
 
-                    if is_powerpoint(filename):
+                    if is_downloadable_file(filename):
                         file_url = item.get('url')
                         if file_url:
                             print(f"  📥 Found direct file: {filename}")
@@ -265,10 +265,10 @@ def main():
                                 filepath = module_folder / sanitize_filename(filename)
                                 download_file(headers, download_url, filepath)
                                 downloaded_files.add(download_url)
-                                total_ppts += 1
+                                total_files += 1
                                 print(f"  ✅ Downloaded: {filename}")
 
-                # Handle Page items (this is where your PPTs are!)
+                # Handle Page items (files embedded in pages)
                 elif item_type == 'Page':
                     print(f"  📄 Checking page: {item_title}")
                     page_url = item.get('url')
@@ -293,7 +293,7 @@ def main():
                                 if file_info:
                                     filename = file_info.get('display_name', file_info.get('filename', 'unknown'))
 
-                                    if is_powerpoint(filename):
+                                    if is_downloadable_file(filename):
                                         download_url = file_info.get('url')
 
                                         if download_url and download_url not in downloaded_files:
@@ -301,10 +301,10 @@ def main():
                                             filepath = module_folder / sanitize_filename(filename)
                                             download_file(headers, download_url, filepath)
                                             downloaded_files.add(download_url)
-                                            total_ppts += 1
+                                            total_files += 1
                                             print(f"    ✅ Downloaded: {filename}")
 
-        print(f"\n🎉 Complete! Downloaded {total_ppts} PowerPoint files to '{output_dir}'")
+        print(f"\n🎉 Complete! Downloaded {total_files} files to '{output_dir}'")
 
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 401:

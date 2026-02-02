@@ -1,10 +1,10 @@
-# Canvas PowerPoint Downloader
+# Canvas File Downloader
 
-A tool to download all PowerPoint files from your Canvas course modules for revision. Available as both a user-friendly web interface and a command-line script.
+A tool to download all PowerPoint and PDF files from your Canvas course modules for revision. Available as both a user-friendly web interface and a command-line script.
 
 ## Features
 
-- Download PowerPoint files from Canvas courses (.ppt, .pptx, .pptm)
+- Download PowerPoint and PDF files from Canvas courses (.ppt, .pptx, .pptm, .pdf)
 - Web interface - no command line needed
 - Select specific modules or download all at once
 - Real-time progress updates
@@ -39,7 +39,7 @@ The easiest way to use this tool is through the web interface:
    - Select your course from the dropdown
    - Click "Load Modules"
    - Choose which modules to download (or select all)
-   - Click "Download PowerPoints"
+   - Click "Download Files"
    - Download the ZIP file with all your files
 
 ### Option 2: Command Line
@@ -96,20 +96,21 @@ for course in response.json():
 
 1. Connects to Canvas using your API token
 2. Fetches all modules in your course
-3. Scans each module for PowerPoint files (.ppt, .pptx, .pptm)
+3. Scans each module for PowerPoint and PDF files (.ppt, .pptx, .pptm, .pdf)
 4. Downloads them organized by module name
-5. Saves to `canvas_powerpoints` folder (CLI) or ZIP file (web app)
+5. Saves to `canvas_files` folder (CLI) or ZIP file (web app)
 
 ## Output Structure
 
 ```
-canvas_powerpoints/
+canvas_files/
 ├── Week 1 - Introduction/
 │   ├── Lecture_1.pptx
-│   └── Tutorial_1.pptx
+│   ├── Tutorial_1.pdf
+│   └── Notes_1.pdf
 ├── Week 2 - Data Structures/
 │   ├── Lecture_2.pptx
-│   └── Lab_2.pptx
+│   └── Lab_2.pdf
 └── ...
 ```
 
@@ -137,12 +138,12 @@ canvas_powerpoints/
 - Verify your API token is valid
 
 **No files downloaded**
-- Check that the course has PowerPoint files in modules
+- Check that the course has PowerPoint or PDF files in modules
 - Some files might be external links rather than uploaded files
 
 ## Notes
 
-- Only downloads PowerPoint files (not PDFs or other formats)
+- Downloads PowerPoint files (.ppt, .pptx, .pptm) and PDF files (.pdf)
 - Files are organized by module name
 - Running again will overwrite existing files
 - API token is kept secure and only used for authentication

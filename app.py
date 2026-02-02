@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Canvas PowerPoint Downloader - Streamlit Web App
+Canvas File Downloader - Streamlit Web App
+Downloads PowerPoint and PDF files from Canvas course modules
 """
 
 import streamlit as st
@@ -25,7 +26,7 @@ class FileURLExtractor(HTMLParser):
         if tag == 'a':
             for attr, value in attrs:
                 if attr == 'href' and value:
-                    if '/files/' in value or value.endswith(('.ppt', '.pptx', '.pptm')):
+                    if '/files/' in value or value.endswith(('.ppt', '.pptx', '.pptm', '.pdf')):
                         self.file_urls.append(value)
 
 
@@ -127,9 +128,9 @@ def download_file(api_token, url):
     return response.content
 
 
-def is_powerpoint(filename):
-    """Check if file is a PowerPoint"""
-    return filename.lower().endswith(('.ppt', '.pptx', '.pptm'))
+def is_downloadable_file(filename):
+    """Check if file is a PowerPoint or PDF"""
+    return filename.lower().endswith(('.ppt', '.pptx', '.pptm', '.pdf'))
 
 
 def sanitize_filename(filename):
@@ -141,7 +142,7 @@ def sanitize_filename(filename):
 
 
 def download_powerpoints(canvas_url, api_token, course_id, selected_module_ids, progress_bar, status_text):
-    """Download PowerPoints from selected modules"""
+    """Download PowerPoints and PDFs from selected modules"""
     headers = {'Authorization': f'Bearer {api_token}'}
 
     # Create temporary directory
@@ -175,7 +176,7 @@ def download_powerpoints(canvas_url, api_token, course_id, selected_module_ids, 
                 if item_type == 'File':
                     filename = item_title
 
-                    if is_powerpoint(filename):
+                    if is_downloadable_file(filename):
                         file_url = item.get('url')
                         if file_url:
                             file_response = requests.get(file_url, headers=headers)
@@ -208,7 +209,7 @@ def download_powerpoints(canvas_url, api_token, course_id, selected_module_ids, 
                                 if file_info:
                                     filename = file_info.get('display_name', file_info.get('filename', 'unknown'))
 
-                                    if is_powerpoint(filename):
+                                    if is_downloadable_file(filename):
                                         download_url = file_info.get('url')
 
                                         if download_url and download_url not in downloaded_files:
@@ -240,13 +241,13 @@ def download_powerpoints(canvas_url, api_token, course_id, selected_module_ids, 
 
 def main():
     st.set_page_config(
-        page_title="Canvas PowerPoint Downloader",
+        page_title="Canvas File Downloader",
         page_icon="📚",
         layout="centered"
     )
 
-    st.title("📚 Canvas PowerPoint Downloader")
-    st.markdown("Download all PowerPoint files from your Canvas course modules")
+    st.title("📚 Canvas File Downloader")
+    st.markdown("Download all PowerPoint and PDF files from your Canvas course modules")
 
     # Initialize session state
     if 'courses' not in st.session_state:
@@ -331,7 +332,7 @@ def main():
             # Download button
             st.header("⬇️ Download")
 
-            if st.button("📥 Download PowerPoints", type="primary", disabled=not selected_module_ids):
+            if st.button("📥 Download Files", type="primary", disabled=not selected_module_ids):
                 progress_bar = st.progress(0)
                 status_text = st.empty()
 
@@ -345,16 +346,16 @@ def main():
                     progress_bar.empty()
 
                     if total_files > 0:
-                        st.success(f"✅ Successfully downloaded {total_files} PowerPoint file(s)!")
+                        st.success(f"✅ Successfully downloaded {total_files} file(s)!")
 
                         st.download_button(
                             label="💾 Download ZIP File",
                             data=zip_buffer,
-                            file_name="canvas_powerpoints.zip",
+                            file_name="canvas_files.zip",
                             mime="application/zip"
                         )
                     else:
-                        st.warning("No PowerPoint files found in the selected modules.")
+                        st.warning("No PowerPoint or PDF files found in the selected modules.")
 
                 except Exception as e:
                     st.error(f"Error: {e}")
