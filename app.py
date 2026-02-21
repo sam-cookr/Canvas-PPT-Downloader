@@ -17,7 +17,7 @@ import shutil
 # ── Known Canvas institutions ──────────────────────────────────────────────────
 # URLs verified against known Canvas deployments. Select "Other" if yours isn't listed.
 UNIVERSITIES = {
-    "Newcastle University":              "https://newcastle.instructure.com",
+    "Newcastle University":              "https://ncl.instructure.com",
     "Brunel University London":          "https://brunel.instructure.com",
     "Coventry University":               "https://coventry.instructure.com",
     "De Montfort University":            "https://dmu.instructure.com",
